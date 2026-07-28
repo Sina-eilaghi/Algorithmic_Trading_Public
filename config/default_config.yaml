@@ -1,0 +1,21 @@
+assets:
+  crypto:
+    - {name: Bitcoin, ticker: BTC-USD}
+    - {name: Solana, ticker: SOL-USD}
+  stocks:
+    - {name: Nvidia, ticker: NVDA}
+    - {name: Tesla, ticker: TSLA}
+    - {name: Microsoft, ticker: MSFT}
+    - {name: Amazon, ticker: AMZN}
+    - {name: Micron, ticker: MU}
+  commodities:
+    - {name: Gold, ticker: XAUUSD=X, ticker_overrides: {hourly_volume_spike: GC=F}}
+    - {name: Silver, ticker: XAGUSD=X, ticker_overrides: {hourly_volume_spike: SI=F}}
+
+strategies:
+  daily_bollinger_breakout:
+    enabled: true
+    params: {std_multiplier: 2.2, lookback_days: 20}
+  hourly_volume_spike:
+    enabled: true
+    params: {volume_multiplier: 10, lookback_hours: 24, exclude_current_candle: true}
