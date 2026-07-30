@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class AlertEngine:
+    # This class is responsible for running the alert engine, which checks the market for signals based on the configured strategies and assets. Also save signals to the database and sends notifications if a signal is triggered.
     def __init__(self, config_manager: ConfigManager | None = None, repository: SignalRepository | None = None, notifier: Any | None = None):
         self.config_manager = config_manager or ConfigManager()
         self.repository = repository or SignalRepository()

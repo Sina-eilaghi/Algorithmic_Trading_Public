@@ -7,8 +7,8 @@ from scheduler.engine import AlertEngine
 
 
 if __name__ == "__main__":
-    notifier = TelegramNotifier()
-    engine = AlertEngine(notifier=notifier)
+    notifier = TelegramNotifier() # This is the object used to send alerts.
+    engine = AlertEngine(notifier=notifier) # This is the part that actually checks the market and decides whether a signal should be triggered.
     engine.run()
 
     scheduler = BlockingScheduler()
