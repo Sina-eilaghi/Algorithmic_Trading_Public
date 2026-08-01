@@ -1,16 +1,20 @@
 from __future__ import annotations
 
+import asyncio
 import os
 from typing import Any
 
-from telegram import Bot, Update
+from dotenv import load_dotenv
+from telegram import Bot, KeyboardButton, ReplyKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, ContextTypes
 
 from config.loader import ConfigManager
 from db.repository import SignalRepository
 
-TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "")
+load_dotenv()
+
+TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "").strip()
 
 
 class TelegramNotifier:
@@ -21,12 +25,17 @@ class TelegramNotifier:
     def send_message(self, message: str) -> None:
         if not self.token or not self.chat_id:
             return
-        bot = Bot(token=self.token)
-        bot.send_message(chat_id=self.chat_id, text=message)
+        asyncio.run(self._send_message(message))
+
+    async def _send_message(self, message: str) -> None:
+        async with Bot(token=self.token) as bot:
+            await bot.send_message(chat_id=self.chat_id, text=message)
 
 
 class AlertBot:
     def __init__(self, config_manager: ConfigManager | None = None, repository: SignalRepository | None = None):
+        if not TOKEN:
+            raise RuntimeError("TELEGRAM_BOT_TOKEN is missing. Add it to the project .env file.")
         self.config_manager = config_manager or ConfigManager()
         self.repository = repository or SignalRepository()
         self.application = Application.builder().token(TOKEN).build()
@@ -42,7 +51,18 @@ class AlertBot:
         self.application.add_handler(CommandHandler("help", self._help))
 
     async def _start(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-        await update.message.reply_text("Alert bot is active.")
+        keyboard = ReplyKeyboardMarkup(
+            [
+                [KeyboardButton("/status"), KeyboardButton("/list_assets")],
+                [KeyboardButton("/help")],
+            ],
+            resize_keyboard=True,
+            is_persistent=True,
+        )
+        await update.message.reply_text(
+            "Alert bot is active. Choose an option below:",
+            reply_markup=keyboard,
+        )
 
     async def _status(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         lines = ["Strategies:"]

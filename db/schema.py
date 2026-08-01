@@ -5,7 +5,8 @@ DB_PATH = Path(__file__).resolve().parent / "alerts.db"
 
 
 def init_db() -> sqlite3.Connection:
-    conn = sqlite3.connect(DB_PATH)
+    # The scanning engine runs in APScheduler's worker thread.
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS signals (

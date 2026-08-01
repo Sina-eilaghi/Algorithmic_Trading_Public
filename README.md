@@ -19,14 +19,44 @@ This project provides a modular Python trading bot and alert system for monitori
    source .venv/bin/activate
    pip install -r requirements.txt
    ```
-2. Copy the environment file and fill in your Telegram credentials:
+2. Copy the environment file and fill in the credentials from BotFather and your
+   numeric Telegram chat ID:
    ```bash
    cp .env.example .env
    ```
-3. Run the engine locally:
+   ```dotenv
+   TELEGRAM_BOT_TOKEN=123456789:replace-with-your-bot-token
+   TELEGRAM_CHAT_ID=123456789
+   ```
+3. Run the complete service (Telegram command bot plus scheduled market scans):
    ```bash
    python main.py
    ```
+
+4. Open the bot in Telegram, press **Start**, then try:
+   ```text
+   /status
+   /list_assets
+   /help
+   ```
+
+Sending `/start` also displays a persistent keyboard containing **Status**,
+**List assets**, and **Help** command buttons.
+
+The first market scan starts immediately. Further scans run hourly. Stop the
+service with `Ctrl+C`.
+
+### Getting your chat ID
+
+Send a message to the bot, then open the following URL in a browser, replacing
+`<TOKEN>` with the token supplied by BotFather:
+
+```text
+https://api.telegram.org/bot<TOKEN>/getUpdates
+```
+
+Use the numeric value under `message.chat.id` as `TELEGRAM_CHAT_ID`. Treat the
+bot token as a password and never commit the `.env` file.
 
 ## Notes
 
