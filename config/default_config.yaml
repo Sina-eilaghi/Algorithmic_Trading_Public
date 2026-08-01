@@ -18,4 +18,4 @@ strategies:
     params: {std_multiplier: 2.2, lookback_days: 20}
   hourly_volume_spike:
     enabled: true
-    params: {volume_multiplier: 3, lookback_hours: 24, exclude_current_candle: true}
+    params: {volume_multiplier: 0.5, lookback_hours: 24, exclude_current_candle: true}
