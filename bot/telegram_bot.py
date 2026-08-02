@@ -6,7 +6,7 @@ from typing import Any
 
 from dotenv import load_dotenv
 from telegram import Bot, KeyboardButton, ReplyKeyboardMarkup, Update
-from telegram.ext import Application, CommandHandler, ContextTypes
+from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
 from config.loader import ConfigManager
 from db.repository import SignalRepository
@@ -49,12 +49,15 @@ class AlertBot:
         self.application.add_handler(CommandHandler("kpis", self._kpis))
         self.application.add_handler(CommandHandler("list_assets", self._list_assets))
         self.application.add_handler(CommandHandler("help", self._help))
+        self.application.add_handler(MessageHandler(filters.Regex(r"^Status$"), self._status))
+        self.application.add_handler(MessageHandler(filters.Regex(r"^List assets$"), self._list_assets))
+        self.application.add_handler(MessageHandler(filters.Regex(r"^Help$"), self._help))
 
     async def _start(self, update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         keyboard = ReplyKeyboardMarkup(
             [
-                [KeyboardButton("/status"), KeyboardButton("/list_assets")],
-                [KeyboardButton("/help")],
+                [KeyboardButton("Status"), KeyboardButton("List assets")],
+                [KeyboardButton("Help")],
             ],
             resize_keyboard=True,
             is_persistent=True,

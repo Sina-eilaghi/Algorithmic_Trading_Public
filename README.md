@@ -41,7 +41,8 @@ This project provides a modular Python trading bot and alert system for monitori
    ```
 
 Sending `/start` also displays a persistent keyboard containing **Status**,
-**List assets**, and **Help** command buttons.
+**List assets**, and **Help** buttons. The slash commands continue to work when
+entered manually.
 
 The first market scan starts immediately. Further scans run hourly. Stop the
 service with `Ctrl+C`.
